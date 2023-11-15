@@ -32,24 +32,25 @@ func main() {
 	data, err := os.ReadFile("repositories.txt")
 
 	if err != nil {
-		log.Fatal("Reading file failed: %v", err)
+		log.Fatalf("Reading file failed: %v", err)
 	}
 
 	repositoriesArray := strings.Split(string(data), "\n")
 	client := github.NewClient(nil).WithAuthToken(ownerPersonalToken)
+
 	for _, repoName := range repositoriesArray {
-		repo, _, err := client.Repositories.Transfer(
+		_, response, _ := client.Repositories.Transfer(
 			context.Background(),
 			owner,
 			repoName,
 			github.TransferRequest{NewOwner: newOwner},
 		)
 
-		if err != nil {
-			log.Fatal("Transfering repository failed: %v", err)
+		if response.StatusCode != 202 || response.StatusCode != 200 {
+			// log.Fatalf("Transfering repository failed: %v", err)
 		}
 
-		fmt.Printf("%v", repo)
+		fmt.Printf("Repository %s transfered successfuly\n", repoName)
 	}
 
 }
