@@ -39,15 +39,16 @@ func main() {
 	client := github.NewClient(nil).WithAuthToken(ownerPersonalToken)
 
 	for _, repoName := range repositoriesArray {
-		_, response, _ := client.Repositories.Transfer(
+		_, response, err := client.Repositories.Transfer(
 			context.Background(),
 			owner,
 			repoName,
 			github.TransferRequest{NewOwner: newOwner},
 		)
 
-		if response.StatusCode != 202 || response.StatusCode != 200 {
-			// log.Fatalf("Transfering repository failed: %v", err)
+		if response.StatusCode != 202 {
+			log.Printf("Failed to transfer %s repository: %v", repoName, err)
+			continue
 		}
 
 		fmt.Printf("Repository %s transfered successfuly\n", repoName)
