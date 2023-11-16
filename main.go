@@ -46,7 +46,7 @@ func main() {
 			github.TransferRequest{NewOwner: newOwner},
 		)
 
-		if response.StatusCode != 202 {
+		if response.StatusCode != 202 && response.StatusCode != 200 {
 			log.Printf("Failed to transfer %s repository: %v", repoName, err)
 			continue
 		}
